@@ -3,42 +3,60 @@
     <ion-title>
       CodeAbode_BT
     </ion-title>
-    <ion-buttons right>
+    <!-- <ion-buttons right>
       <button ion-button clear (click)="startScanning()">Scan Device</button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-navbar>
 </ion-header>
 
+
 <ion-content class="back" padding>
+  <button ion-button full class="submit-button" (click)="listPairedDevices()">
+    <ion-icon name="refresh"></ion-icon>&nbsp;Refresh Bluetooth Devices
+  </button>
+  <ion-row>
+    <ion-col>
+      <ion-list radio-group [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
+        <ion-item *ngFor="let i of pairedList;let j=index">
+          <ion-label>{{i.name}}</ion-label>
+          <ion-radio value="{{j}}"></ion-radio>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+  <!-- <button ion-button full class="submit-button" *ngIf="listToggle" (click)="selectDevice()">
+    <ion-icon name="bluetooth"></ion-icon>&nbsp;Connect Bluetooth Devices
+  </button> -->
 
-<ion-list>
-
- 
-  <h5 *ngIf="gettingDevices">
-     Searching For Devices
-     <ion-spinner name="crescent" *ngIf="gettingDevices"></ion-spinner>
-  </h5>
-  
-
-  <ion-item class="back" *ngFor='let device of unpairedDevices'>
-    <span (click)="selectDevice(device.address)">
-      {{device.name}}
-    </span>
-  </ion-item>
-  
-</ion-list>
-<button ion-button  outline block color="dark"(click)="data()">Start Receiving Data</button>
-<ion-item class="back"  >
-  <p class="fon">
+  <!-- <button ion-button outline block color="dark" (click)="data()">Start Receiving Data</button>
+  <ion-item class="back">
+    <p class="fon">
       {{message}}
-  </p>
-    
-  
-</ion-item>
-<ion-fab left bottom>
-  <button ion-fab color="primary" (click)="page()"><ion-icon name="list"></ion-icon></button>
-</ion-fab>
-<ion-fab right bottom>
-    <button ion-fab color="danger" (click)="disconnect()"><ion-icon name="close-circle"></ion-icon></button>
-</ion-fab>
+    </p>
+  </ion-item> -->
+
+
+  <button ion-button outline block color="dark" (click)="sendData()">Connect Bluetooth Reader</button>
+  <button ion-button outline block color="dark" (click)="sendData()">Connect Bluetooth Weigher</button>
+
+
+  <button ion-button outline block color="dark" (click)="sendData()">Request Weight</button>
+  <button ion-button outline block color="dark" (click)="sendData1()">Request Weight Stable</button>
+
+  <ion-item>
+    <ion-label stacked>Message</ion-label>
+    <ion-textarea [(ngModel)]="message"></ion-textarea>
+  </ion-item>
 </ion-content>
+
+  <ion-fab left bottom>
+    <button ion-fab color="primary" (click)="selectDevice()">
+      <ion-icon name="bluetooth"></ion-icon>
+    </button>
+  </ion-fab>
+  <ion-fab right bottom>
+    <button ion-fab color="danger" (click)="disconnect()">
+      <ion-icon name="close-circle"></ion-icon>
+    </button>
+  </ion-fab>
+

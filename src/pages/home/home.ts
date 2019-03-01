@@ -1,83 +1,121 @@
-import { Component, NgZone } from "@angular/core";
+import { ElementRef, Component, NgZone, HostListener, OnInit } from "@angular/core";
 import { NavController } from "ionic-angular";
 import { BluetoothSerial } from "@ionic-native/bluetooth-serial";
-import { AlertController, LoadingController } from "ionic-angular";
+import { AlertController, LoadingController, ToastController } from "ionic-angular";
 import { Platform } from "ionic-angular";
 
 @Component({
   selector: "page-home",
   templateUrl: "home.html"
 })
-export class HomePage {
+export class HomePage implements OnInit {
+  @HostListener('input', ['$event.target'])
+  onInput(textArea:HTMLTextAreaElement):void {
+    this.adjust();
+  }
+
   output: any;
-  message: String;
+  message: String = "";
   responseTxt: any;
   unpairedDevices: any;
   pairedDevices: any;
   statusMessage: string;
   gettingDevices: Boolean;
+
+  pairedList: pairedlist;
+  listToggle: boolean = false;
+  pairedDeviceID: number = 0;
+  dataSend: string = "";
+
   constructor(
     public loadCtrl: LoadingController,
     private bluetoothSerial: BluetoothSerial,
     private alertCtrl: AlertController,
     public navCtrl: NavController,
     private ngZone: NgZone,
-    private platform: Platform
+    private platform: Platform,
+    private toastCtrl: ToastController,
+    public element:ElementRef
   ) {
     bluetoothSerial.enable();
+    this.checkBluetoothEnabled();
   }
 
-  startScanning() {
-    if (this.platform.is("cordova")) {
-      this.pairedDevices = null;
-      this.unpairedDevices = null;
-      this.gettingDevices = true;
-      this.bluetoothSerial.discoverUnpaired().then(
-        success => {
-          this.unpairedDevices = success;
-          this.gettingDevices = false;
-          success.forEach(element => {});
-        },
-        err => {
-          console.log(err);
-        }
-      );
+  ngOnInit():void {
+    setTimeout(() => this.adjust(), 0);
+  }
 
-      this.bluetoothSerial.list().then(
-        success => {
-          this.pairedDevices = success;
-        },
-        err => {}
-      );
-    } else {
+  checkBluetoothEnabled() {
+    this.bluetoothSerial.isEnabled().then(
+      success => {
+        this.listPairedDevices();
+      },
+      error => {
+        this.showError("Please Enable Bluetooth");
+      }
+    );
+  }
+
+  listPairedDevices() {
+    this.bluetoothSerial.list().then(
+      success => {
+        this.pairedList = success;
+        this.listToggle = true;
+      },
+      error => {
+        this.showError("Please Enable Bluetooth");
+        this.listToggle = false;
+      }
+    );
+  }
+
+  selectDevice() {
+    let connectedDevice = this.pairedList[this.pairedDeviceID];
+    if (!connectedDevice.address) {
+      this.showError("Select Paired Device to connect");
+      return;
     }
-  }
-  success = data => alert(data);
-  fail = error => alert(error);
+    let address = connectedDevice.address;
+    // let name = connectedDevice.name;
 
-  selectDevice(address: any) {
-    let alert = this.alertCtrl.create({
-      title: "Connect",
-      message: "Do you want to connect with?",
-      buttons: [
-        {
-          text: "Cancel",
-          role: "cancel",
-          handler: () => {
-            console.log("Cancel clicked");
-          }
-        },
-        {
-          text: "Connect",
-          handler: () => {
-            this.bluetoothSerial
-              .connect(address)
-              .subscribe(this.success, this.fail);
-          }
-        }
-      ]
-    });
-    alert.present();
+    this.connect(address);
+  }
+
+  connect(address) {
+    // Attempt to connect device with specified address, call app.deviceConnected if success
+    this.bluetoothSerial.connect(address).subscribe(
+      success => {
+        this.deviceConnected();
+        this.showToast("Successfully Connected");
+      },
+      error => {
+        this.showError("Error:Connecting to Device");
+      }
+    );
+  }
+
+  deviceConnected() {
+    // Subscribe to data receiving as soon as the delimiter is read
+    this.bluetoothSerial.subscribe("\r").subscribe(
+    // this.bluetoothSerial.subscribe("").subscribe(
+    // this.bluetoothSerial.subscribeRawData().subscribe(
+      success => {
+        var bytes = new Uint8Array(success);
+
+        this.handleData(success);
+        this.showToast("Connected Successfullly");
+      },
+      error => {
+        this.showError(error);
+      }
+    );
+  }
+
+  handleData(data) {
+    this.showToast(data);
+
+    // let messageText = "\n" + data;
+    this.message += data;
   }
 
   disconnect() {
@@ -107,25 +145,76 @@ export class HomePage {
     this.navCtrl.push("TerminalPage");
   }
 
-  data() {
-    if (this.platform.is("cordova")) {
-      setInterval(() => {
-        this.read1();
-      }, 3000);
-    }
-  }
+  enableCarriage() {
+    this.dataSend ='{ZC1}'; // enable carriage \n
+    this.showToast(this.dataSend);
 
-  read() {
-    this.bluetoothSerial.read().then(data => {
-      this.message = data;
+    this.bluetoothSerial.write(this.dataSend).then(success => {
+      this.showToast(success);
+    }, error => {
+      this.showError(error)
     });
   }
 
-  read1() {
-    this.ngZone.run(() => {
-      this.read();
+  sendData() {
+    this.enableCarriage();
+
+    this.dataSend ='{RW}'; // trutest - yes  gallagher?   this is a live weight
+    this.showToast(this.dataSend);
+
+    this.bluetoothSerial.write(this.dataSend).then(success => {
+      this.showToast(success);
+    }, error => {
+      this.showError(error)
+    });
+  }
+
+  sendData1() {
+    this.enableCarriage();
+
+    this.dataSend ='{RO}'; // trutest - yes  gallagher?   this is a stable weight
+    // this.dataSend ='{RS}'; // trutest - yes  gallagher?   this is a stable weight
+    this.showToast(this.dataSend);
+
+    this.bluetoothSerial.write(this.dataSend).then(success => {
+      this.showToast(success);
+    }, error => {
+      this.showError(error)
     });
   }
 
   page() {}
+
+  showError(error) {
+    let alert = this.alertCtrl.create({
+      title: "Error",
+      subTitle: error,
+      buttons: ["Dismiss"]
+    });
+    alert.present();
+  }
+
+  showToast(msj) {
+    const toast = this.toastCtrl.create({
+      message: msj,
+      duration: 1000
+    });
+    toast.present();
+  }
+
+  adjust():void {
+    const textArea = this.element.nativeElement.getElementsByTagName('textarea')[0];
+    textArea.style.overflow = 'hidden';
+    textArea.style.height = 'auto';
+    textArea.style.height = textArea.scrollHeight + 'px';
+    textArea.style.fontSize = "12px";
+  }
+}
+
+
+interface pairedlist {
+  "class": number,
+  "id": string,
+  "address": string,
+  "name": string
 }
