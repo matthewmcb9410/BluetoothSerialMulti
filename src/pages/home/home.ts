@@ -27,6 +27,12 @@ export class HomePage implements OnInit {
   pairedDeviceID: number = 0;
   dataSend: string = "";
 
+
+  showConnectReader: Boolean = true;
+  showDisconnectReader: Boolean = false;
+  showConnectWeigher: Boolean = true;
+  showDisconnectWeigher: Boolean = false;
+
   constructor(
     public loadCtrl: LoadingController,
     private bluetoothSerial: BluetoothSerial,
@@ -70,6 +76,11 @@ export class HomePage implements OnInit {
   }
 
   selectDevice() {
+    this.showConnectReader = false;
+    this.showDisconnectReader = true;
+    this.showConnectWeigher = false;
+    this.showDisconnectWeigher = true;
+
     let connectedDevice = this.pairedList[this.pairedDeviceID];
     if (!connectedDevice.address) {
       this.showError("Select Paired Device to connect");
@@ -119,6 +130,11 @@ export class HomePage implements OnInit {
   }
 
   disconnect() {
+    this.showConnectReader = true;
+    this.showDisconnectReader = false;
+    this.showConnectWeigher = true;
+    this.showDisconnectWeigher = false;
+
     let alert = this.alertCtrl.create({
       title: "Disconnect?",
       message: "Do you want to Disconnect?",

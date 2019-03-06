@@ -1,11 +1,8 @@
 <ion-header>
   <ion-navbar color="dark">
     <ion-title>
-      CodeAbode_BT
+      Matthew's Bluetooth App Test
     </ion-title>
-    <!-- <ion-buttons right>
-      <button ion-button clear (click)="startScanning()">Scan Device</button>
-    </ion-buttons> -->
   </ion-navbar>
 </ion-header>
 
@@ -24,6 +21,7 @@
       </ion-list>
     </ion-col>
   </ion-row>
+
   <!-- <button ion-button full class="submit-button" *ngIf="listToggle" (click)="selectDevice()">
     <ion-icon name="bluetooth"></ion-icon>&nbsp;Connect Bluetooth Devices
   </button> -->
@@ -36,12 +34,14 @@
   </ion-item> -->
 
 
-  <button ion-button outline block color="dark" (click)="sendData()">Connect Bluetooth Reader</button>
-  <button ion-button outline block color="dark" (click)="sendData()">Connect Bluetooth Weigher</button>
+  <button ion-button outline block color="dark" name="connectReader" *ngIf="showConnectReader" (click)="selectDevice()">Connect Bluetooth Reader</button>
+  <button ion-button outline block color="dark" name="disconnectReader" *ngIf="showDisconnectReader" (click)="disconnect()">Disconnect Bluetooth Reader</button>
 
-
-  <button ion-button outline block color="dark" (click)="sendData()">Request Weight</button>
-  <button ion-button outline block color="dark" (click)="sendData1()">Request Weight Stable</button>
+  <button ion-button outline block color="dark" name="connectWeigher" *ngIf="showConnectWeigher" (click)="selectDevice()">Connect Bluetooth Weigher</button>
+  <button ion-button outline block color="dark" name="disconnectWeigher" *ngIf="showDisconnectWeigher" (click)="disconnect()">Disconnect Bluetooth Weigher</button>
+ 
+  <!-- <button ion-button outline block color="dark" (click)="sendData()">Request Weight</button>
+  <button ion-button outline block color="dark" (click)="sendData1()">Request Weight Stable</button> -->
 
   <ion-item>
     <ion-label stacked>Message</ion-label>
@@ -49,7 +49,7 @@
   </ion-item>
 </ion-content>
 
-  <ion-fab left bottom>
+  <!-- <ion-fab left bottom>
     <button ion-fab color="primary" (click)="selectDevice()">
       <ion-icon name="bluetooth"></ion-icon>
     </button>
@@ -58,5 +58,4 @@
     <button ion-fab color="danger" (click)="disconnect()">
       <ion-icon name="close-circle"></ion-icon>
     </button>
-  </ion-fab>
-
+  </ion-fab> -->
