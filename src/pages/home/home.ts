@@ -1,6 +1,5 @@
 import { ElementRef, Component, NgZone, HostListener, OnInit } from "@angular/core";
 import { NavController } from "ionic-angular";
-import { BluetoothSerial } from "@ionic-native/bluetooth-serial";
 import { AlertController, LoadingController, ToastController } from "ionic-angular";
 import { Platform } from "ionic-angular";
 
@@ -32,6 +31,9 @@ export class HomePage implements OnInit {
   showDisconnectReader: Boolean = false;
   showConnectWeigher: Boolean = true;
   showDisconnectWeigher: Boolean = false;
+
+  address1: string;
+  address2: string;
 
   constructor(
     public loadCtrl: LoadingController,
@@ -78,6 +80,25 @@ export class HomePage implements OnInit {
   selectDevice() {
     this.showConnectReader = false;
     this.showDisconnectReader = true;
+    // this.showConnectWeigher = false;
+    // this.showDisconnectWeigher = true;
+
+    let connectedDevice = this.pairedList[this.pairedDeviceID];
+    
+    if (!connectedDevice.address) {
+      this.showError("Select Paired Device to connect");
+      return;
+    }
+    let address = connectedDevice.address;
+    this.address1 = address;
+    // let name = connectedDevice.name;
+
+    this.connect(address);
+  }
+
+  selectDevice2() {
+    // this.showConnectReader = false;
+    // this.showDisconnectReader = true;
     this.showConnectWeigher = false;
     this.showDisconnectWeigher = true;
 
@@ -87,6 +108,7 @@ export class HomePage implements OnInit {
       return;
     }
     let address = connectedDevice.address;
+    this.address2 = address;
     // let name = connectedDevice.name;
 
     this.connect(address);
@@ -94,14 +116,15 @@ export class HomePage implements OnInit {
 
   connect(address) {
     // Attempt to connect device with specified address, call app.deviceConnected if success
-    this.bluetoothSerial.connect(address).subscribe(
+    this.bluetoothSerial.connect(address).subscribe('\n',
       success => {
         this.deviceConnected();
         this.showToast("Successfully Connected");
       },
       error => {
         this.showError("Error:Connecting to Device");
-      }
+      },
+      address
     );
   }
 
@@ -132,6 +155,35 @@ export class HomePage implements OnInit {
   disconnect() {
     this.showConnectReader = true;
     this.showDisconnectReader = false;
+    // this.showConnectWeigher = true;
+    // this.showDisconnectWeigher = false;
+
+    let alert = this.alertCtrl.create({
+      title: "Disconnect?",
+      message: "Do you want to Disconnect?",
+      buttons: [
+        {
+          text: "Cancel",
+          role: "cancel",
+          handler: () => {
+            alert.dismiss();
+          }
+        },
+        {
+          text: "Disconnect",
+          handler: () => {
+            this.bluetoothSerial.disconnect(this.address1);
+            this.gettingDevices = null;
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  disconnect2() {
+    // this.showConnectReader = true;
+    // this.showDisconnectReader = false;
     this.showConnectWeigher = true;
     this.showDisconnectWeigher = false;
 
@@ -149,7 +201,7 @@ export class HomePage implements OnInit {
         {
           text: "Disconnect",
           handler: () => {
-            this.bluetoothSerial.disconnect();
+            this.bluetoothSerial.disconnect(this.address2);
             this.gettingDevices = null;
           }
         }
