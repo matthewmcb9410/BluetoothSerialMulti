@@ -1,20 +1,20 @@
-import { ElementRef, Component, NgZone, HostListener, OnInit } from "@angular/core";
-import { NavController } from "ionic-angular";
-import { AlertController, LoadingController, ToastController } from "ionic-angular";
-import { Platform } from "ionic-angular";
+import { ElementRef, Component, NgZone, HostListener, OnInit } from '@angular/core';
+import { NavController } from 'ionic-angular';
+import { AlertController, LoadingController, ToastController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 
 @Component({
-  selector: "page-home",
-  templateUrl: "home.html"
+  selector: 'page-home',
+  templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
   @HostListener('input', ['$event.target'])
-  onInput(textArea:HTMLTextAreaElement):void {
+  onInput(textArea: HTMLTextAreaElement): void {
     this.adjust();
   }
 
   output: any;
-  message: String = "";
+  message: String = '';
   responseTxt: any;
   unpairedDevices: any;
   pairedDevices: any;
@@ -24,8 +24,7 @@ export class HomePage implements OnInit {
   pairedList: pairedlist;
   listToggle: boolean = false;
   pairedDeviceID: number = 0;
-  dataSend: string = "";
-
+  dataSend: string = '';
 
   showConnectReader: Boolean = true;
   showDisconnectReader: Boolean = false;
@@ -35,21 +34,30 @@ export class HomePage implements OnInit {
   address1: string;
   address2: string;
 
+  bluetoothSerial;
+
   constructor(
     public loadCtrl: LoadingController,
-    private bluetoothSerial: BluetoothSerial,
+    // private bluetoothSerial: BluetoothSerial,
     private alertCtrl: AlertController,
     public navCtrl: NavController,
     private ngZone: NgZone,
     private platform: Platform,
     private toastCtrl: ToastController,
-    public element:ElementRef
+    public element: ElementRef
   ) {
-    bluetoothSerial.enable();
+    this.platform.ready().then(() => {
+      this.bluetoothSerial = cordova.require('com.megster.cordova.BluetoothSerial.BluetoothSerial');
+
+      console.log('The wikitude object: ', this.bluetoothSerial);
+      console.log('The wikitude test method: ', this.bluetoothSerial.connect);
+    });
+
+    // bluetoothSerial.enable();
     this.checkBluetoothEnabled();
   }
 
-  ngOnInit():void {
+  ngOnInit(): void {
     setTimeout(() => this.adjust(), 0);
   }
 
@@ -59,7 +67,7 @@ export class HomePage implements OnInit {
         this.listPairedDevices();
       },
       error => {
-        this.showError("Please Enable Bluetooth");
+        this.showError('Please Enable Bluetooth');
       }
     );
   }
@@ -71,7 +79,7 @@ export class HomePage implements OnInit {
         this.listToggle = true;
       },
       error => {
-        this.showError("Please Enable Bluetooth");
+        this.showError('Please Enable Bluetooth');
         this.listToggle = false;
       }
     );
@@ -84,9 +92,9 @@ export class HomePage implements OnInit {
     // this.showDisconnectWeigher = true;
 
     let connectedDevice = this.pairedList[this.pairedDeviceID];
-    
+
     if (!connectedDevice.address) {
-      this.showError("Select Paired Device to connect");
+      this.showError('Select Paired Device to connect');
       return;
     }
     let address = connectedDevice.address;
@@ -104,7 +112,7 @@ export class HomePage implements OnInit {
 
     let connectedDevice = this.pairedList[this.pairedDeviceID];
     if (!connectedDevice.address) {
-      this.showError("Select Paired Device to connect");
+      this.showError('Select Paired Device to connect');
       return;
     }
     let address = connectedDevice.address;
@@ -116,13 +124,14 @@ export class HomePage implements OnInit {
 
   connect(address) {
     // Attempt to connect device with specified address, call app.deviceConnected if success
-    this.bluetoothSerial.connect(address).subscribe('\n',
+    this.bluetoothSerial.connect(address).subscribe(
+      '\n',
       success => {
         this.deviceConnected();
-        this.showToast("Successfully Connected");
+        this.showToast('Successfully Connected');
       },
       error => {
-        this.showError("Error:Connecting to Device");
+        this.showError('Error:Connecting to Device');
       },
       address
     );
@@ -130,14 +139,14 @@ export class HomePage implements OnInit {
 
   deviceConnected() {
     // Subscribe to data receiving as soon as the delimiter is read
-    this.bluetoothSerial.subscribe("\r").subscribe(
-    // this.bluetoothSerial.subscribe("").subscribe(
-    // this.bluetoothSerial.subscribeRawData().subscribe(
+    this.bluetoothSerial.subscribe('\r').subscribe(
+      // this.bluetoothSerial.subscribe("").subscribe(
+      // this.bluetoothSerial.subscribeRawData().subscribe(
       success => {
         var bytes = new Uint8Array(success);
 
         this.handleData(success);
-        this.showToast("Connected Successfullly");
+        this.showToast('Connected Successfullly');
       },
       error => {
         this.showError(error);
@@ -159,18 +168,18 @@ export class HomePage implements OnInit {
     // this.showDisconnectWeigher = false;
 
     let alert = this.alertCtrl.create({
-      title: "Disconnect?",
-      message: "Do you want to Disconnect?",
+      title: 'Disconnect?',
+      message: 'Do you want to Disconnect?',
       buttons: [
         {
-          text: "Cancel",
-          role: "cancel",
+          text: 'Cancel',
+          role: 'cancel',
           handler: () => {
             alert.dismiss();
           }
         },
         {
-          text: "Disconnect",
+          text: 'Disconnect',
           handler: () => {
             this.bluetoothSerial.disconnect(this.address1);
             this.gettingDevices = null;
@@ -188,18 +197,18 @@ export class HomePage implements OnInit {
     this.showDisconnectWeigher = false;
 
     let alert = this.alertCtrl.create({
-      title: "Disconnect?",
-      message: "Do you want to Disconnect?",
+      title: 'Disconnect?',
+      message: 'Do you want to Disconnect?',
       buttons: [
         {
-          text: "Cancel",
-          role: "cancel",
+          text: 'Cancel',
+          role: 'cancel',
           handler: () => {
             alert.dismiss();
           }
         },
         {
-          text: "Disconnect",
+          text: 'Disconnect',
           handler: () => {
             this.bluetoothSerial.disconnect(this.address2);
             this.gettingDevices = null;
@@ -210,54 +219,63 @@ export class HomePage implements OnInit {
     alert.present();
   }
   next() {
-    this.navCtrl.push("TerminalPage");
+    this.navCtrl.push('TerminalPage');
   }
 
   enableCarriage() {
-    this.dataSend ='{ZC1}'; // enable carriage \n
+    this.dataSend = '{ZC1}'; // enable carriage \n
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(this.dataSend).then(success => {
-      this.showToast(success);
-    }, error => {
-      this.showError(error)
-    });
+    this.bluetoothSerial.write(this.dataSend).then(
+      success => {
+        this.showToast(success);
+      },
+      error => {
+        this.showError(error);
+      }
+    );
   }
 
   sendData() {
     this.enableCarriage();
 
-    this.dataSend ='{RW}'; // trutest - yes  gallagher?   this is a live weight
+    this.dataSend = '{RW}'; // trutest - yes  gallagher?   this is a live weight
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(this.dataSend).then(success => {
-      this.showToast(success);
-    }, error => {
-      this.showError(error)
-    });
+    this.bluetoothSerial.write(this.dataSend).then(
+      success => {
+        this.showToast(success);
+      },
+      error => {
+        this.showError(error);
+      }
+    );
   }
 
   sendData1() {
     this.enableCarriage();
 
-    this.dataSend ='{RO}'; // trutest - yes  gallagher?   this is a stable weight
+    this.dataSend = '{RO}'; // trutest - yes  gallagher?   this is a stable weight
     // this.dataSend ='{RS}'; // trutest - yes  gallagher?   this is a stable weight
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(this.dataSend).then(success => {
-      this.showToast(success);
-    }, error => {
-      this.showError(error)
-    });
+    this.bluetoothSerial.write(this.dataSend).then(
+      success => {
+        this.showToast(success);
+      },
+      error => {
+        this.showError(error);
+      }
+    );
   }
 
   page() {}
 
   showError(error) {
     let alert = this.alertCtrl.create({
-      title: "Error",
+      title: 'Error',
       subTitle: error,
-      buttons: ["Dismiss"]
+      buttons: ['Dismiss']
     });
     alert.present();
   }
@@ -270,19 +288,18 @@ export class HomePage implements OnInit {
     toast.present();
   }
 
-  adjust():void {
+  adjust(): void {
     const textArea = this.element.nativeElement.getElementsByTagName('textarea')[0];
     textArea.style.overflow = 'hidden';
     textArea.style.height = 'auto';
     textArea.style.height = textArea.scrollHeight + 'px';
-    textArea.style.fontSize = "12px";
+    textArea.style.fontSize = '12px';
   }
 }
 
-
 interface pairedlist {
-  "class": number,
-  "id": string,
-  "address": string,
-  "name": string
+  class: number;
+  id: string;
+  address: string;
+  name: string;
 }
