@@ -33,7 +33,7 @@ export class HomePage implements OnInit {
 
   address1: string;
   address2: string;
-
+  keys: any;
   bluetoothSerial;
 
   constructor(
@@ -47,14 +47,16 @@ export class HomePage implements OnInit {
     public element: ElementRef
   ) {
     this.platform.ready().then(() => {
-      this.bluetoothSerial = cordova.require('com.megster.cordova.BluetoothSerial.BluetoothSerial');
+      this.bluetoothSerial = window.bluetoothSerial;
+      console.log('keys#########: ', Object.keys(window));
+      this.keys = Object.keys(this.bluetoothSerial);
+      this.message += this.bluetoothSerial.isEnabled.toString();
 
-      console.log('The wikitude object: ', this.bluetoothSerial);
-      console.log('The wikitude test method: ', this.bluetoothSerial.connect);
+      
+      this.showError(await this.bluetoothSerial.isEnabled());
+
+      // this.checkBluetoothEnabled();
     });
-
-    // bluetoothSerial.enable();
-    this.checkBluetoothEnabled();
   }
 
   ngOnInit(): void {
@@ -62,14 +64,19 @@ export class HomePage implements OnInit {
   }
 
   checkBluetoothEnabled() {
-    this.bluetoothSerial.isEnabled().then(
-      success => {
-        this.listPairedDevices();
-      },
-      error => {
-        this.showError('Please Enable Bluetooth');
-      }
-    );
+    if (this.bluetoothSerial.isEnabled()) {
+      this.listPairedDevices();
+    } else {
+      this.showError('Please Enable Bluetooth');
+    }
+    // this.bluetoothSerial.isEnabled().then(
+    //   success => {
+    //     this.listPairedDevices();
+    //   },
+    //   error => {
+    //     this.showError('Please Enable Bluetooth');
+    //   }
+    // );
   }
 
   listPairedDevices() {
