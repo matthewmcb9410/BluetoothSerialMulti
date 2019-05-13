@@ -26,6 +26,9 @@ export class HomePage implements OnInit {
   pairedDeviceID: number = 0;
   dataSend: string = '';
 
+
+  showConnectBarcode: Boolean = true;
+  showDisconnectBarcode: Boolean = false;
   showConnectReader: Boolean = true;
   showDisconnectReader: Boolean = false;
   showConnectWeigher: Boolean = true;
@@ -33,6 +36,7 @@ export class HomePage implements OnInit {
 
   address1: string;
   address2: string;
+  address3: string;
   private bluetoothSerial;
 
   constructor(
@@ -45,7 +49,7 @@ export class HomePage implements OnInit {
     public element: ElementRef
   ) {
     this.platform.ready().then(() => {
-      this.bluetoothSerial = window.bluetoothSerial;
+      this.bluetoothSerial = (<any>window.bluetoothSerial);
 
       this.checkBluetoothEnabled();
     });
@@ -79,6 +83,8 @@ export class HomePage implements OnInit {
     );
   }
 
+  
+  /* Select Devices */ 
   selectDevice() {
     this.showConnectReader = false;
     this.showDisconnectReader = true;
@@ -107,9 +113,26 @@ export class HomePage implements OnInit {
     let address = connectedDevice.address;
     this.address2 = address;
 
-    this.connect(address);
+    this.connect2(address);
   }
 
+  selectDevice3() {
+    this.showConnectBarcode = false;
+    this.showDisconnectBarcode = true;
+
+    let connectedDevice = this.pairedList[this.pairedDeviceID];
+    if (!connectedDevice.address) {
+      this.showError('Select Paired Device to connect');
+      return;
+    }
+    let address = connectedDevice.address;
+    this.address3 = address;
+
+    this.connect3(address);
+  }
+
+
+  /* Connect */
   connect(address) {
     // Attempt to connect device with specified address, call app.deviceConnected if success
     console.log('This is the connected address:', address);
@@ -130,6 +153,48 @@ export class HomePage implements OnInit {
     );
   }
 
+  connect2(address) {
+    // Attempt to connect device with specified address, call app.deviceConnected if success
+    console.log('This is the connected address:', address);
+    this.showToast(`this is the connected address ${address}`);
+
+    this.bluetoothSerial.connect2(
+      address,
+      success => {
+        this.deviceConnected2(address,
+          );
+        this.showToast(`Successfully Connected  ${address}`);
+        console.log('Success address:', address);
+      },
+      error => {
+        this.showError(`Error:Connecting to Device  ${address}`);
+        console.log('Failure address:', address);
+      }
+    );
+  }
+
+  connect3(address) {
+    // Attempt to connect device with specified address, call app.deviceConnected if success
+    console.log('This is the connected address:', address);
+    this.showToast(`this is the connected address ${address}`);
+
+    this.bluetoothSerial.connect3(
+      address,
+      success => {
+        this.deviceConnected3(address,
+          );
+        this.showToast(`Successfully Connected  ${address}`);
+        console.log('Success address:', address);
+      },
+      error => {
+        this.showError(`Error:Connecting to Device  ${address}`);
+        console.log('Failure address:', address);
+      }
+    );
+  }
+
+
+  /* Device Connected */
   deviceConnected(address) {
     // Subscribe to data receiving as soon as the delimiter is read
     this.bluetoothSerial.subscribe(
@@ -147,6 +212,42 @@ export class HomePage implements OnInit {
     );
   }
 
+  deviceConnected2(address) {
+    // Subscribe to data receiving as soon as the delimiter is read
+    this.bluetoothSerial.subscribe2(
+      '\r',
+      success => {
+        var bytes = new Uint8Array(success);
+
+        this.handleData(success);
+        this.showToast('Connected Successfullly');
+      },
+      // error => {
+      //   this.showError(error);
+      // },
+      address
+    );
+  }
+
+  deviceConnected3(address) {
+    // Subscribe to data receiving as soon as the delimiter is read
+    this.bluetoothSerial.subscribe3(
+      '\r',
+      success => {
+        var bytes = new Uint8Array(success);
+
+        this.handleData(success);
+        this.showToast('Connected Successfullly');
+      },
+      // error => {
+      //   this.showError(error);
+      // },
+      address
+    );
+  }
+
+
+  /* Handle Data */
   handleData(data) {
     this.showToast(data);
 
@@ -154,6 +255,8 @@ export class HomePage implements OnInit {
     this.message += data;
   }
 
+
+  /* Disconnect */
   disconnect() {
     this.showConnectReader = true;
     this.showDisconnectReader = false;
@@ -199,7 +302,7 @@ export class HomePage implements OnInit {
         {
           text: 'Disconnect',
           handler: () => {
-            this.bluetoothSerial.disconnect(success => {}, error => {}, this.address2);
+            this.bluetoothSerial.disconnect2(success => {}, error => {}, this.address2);
             this.gettingDevices = null;
           }
         }
@@ -207,6 +310,35 @@ export class HomePage implements OnInit {
     });
     alert.present();
   }
+
+  disconnect3() {
+    this.showConnectBarcode = true;
+    this.showDisconnectBarcode = false;
+
+    let alert = this.alertCtrl.create({
+      title: 'Disconnect?',
+      message: 'Do you want to Disconnect?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            alert.dismiss();
+          }
+        },
+        {
+          text: 'Disconnect',
+          handler: () => {
+            this.bluetoothSerial.disconnect3(success => {}, error => {}, this.address3);
+            this.gettingDevices = null;
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+
   next() {
     this.navCtrl.push('TerminalPage');
   }
@@ -215,7 +347,7 @@ export class HomePage implements OnInit {
     this.dataSend = '{ZC1}'; // enable carriage \n
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(
+    this.bluetoothSerial.write2(
       this.dataSend,
       success => {
         this.showToast(success);
@@ -233,7 +365,7 @@ export class HomePage implements OnInit {
     this.dataSend = '{RW}'; // trutest - yes  gallagher?   this is a live weight
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(
+    this.bluetoothSerial.write2(
       this.dataSend,
       success => {
         this.showToast(success);
@@ -252,7 +384,7 @@ export class HomePage implements OnInit {
     // this.dataSend ='{RS}'; // trutest - yes  gallagher?   this is a stable weight
     this.showToast(this.dataSend);
 
-    this.bluetoothSerial.write(
+    this.bluetoothSerial.write2(
       this.dataSend,
       success => {
         this.showToast(success);

@@ -54,9 +54,9 @@
             "cordova-plugin-bluetooth-serial": {}
         },
         "platforms": [
-            "android",
             "ios",
-            "browser"
+            "browser",
+            "android"
         ]
     }
 }

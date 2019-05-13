@@ -22,17 +22,9 @@
     </ion-col>
   </ion-row>
 
-  <!-- <button ion-button full class="submit-button" *ngIf="listToggle" (click)="selectDevice()">
-    <ion-icon name="bluetooth"></ion-icon>&nbsp;Connect Bluetooth Devices
-  </button> -->
 
-  <!-- <button ion-button outline block color="dark" (click)="data()">Start Receiving Data</button>
-  <ion-item class="back">
-    <p class="fon">
-      {{message}}
-    </p>
-  </ion-item> -->
-
+  <button ion-button outline block color="dark" name="connectBarcode" *ngIf="showConnectBarcode" (click)="selectDevice3()">Connect Bluetooth Barcode Scanner</button>
+  <button ion-button outline block color="dark" name="disconnectBarcode" *ngIf="showDisconnectBarcode" (click)="disconnect3()">Disconnect Bluetooth Barcode Scanner</button>
 
   <button ion-button outline block color="dark" name="connectReader" *ngIf="showConnectReader" (click)="selectDevice()">Connect Bluetooth Reader</button>
   <button ion-button outline block color="dark" name="disconnectReader" *ngIf="showDisconnectReader" (click)="disconnect()">Disconnect Bluetooth Reader</button>
@@ -48,14 +40,3 @@
     <ion-textarea [(ngModel)]="message"></ion-textarea>
   </ion-item>
 </ion-content>
-
-  <!-- <ion-fab left bottom>
-    <button ion-fab color="primary" (click)="selectDevice()">
-      <ion-icon name="bluetooth"></ion-icon>
-    </button>
-  </ion-fab>
-  <ion-fab right bottom>
-    <button ion-fab color="danger" (click)="disconnect()">
-      <ion-icon name="close-circle"></ion-icon>
-    </button>
-  </ion-fab> -->

@@ -83,8 +83,8 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.11" />
     <plugin name="cordova-plugin-bluetooth-serial" spec="git+ssh://git@github.com/Shikoruma/BluetoothSerial.git" />
     <allow-navigation href="http://192.168.1.77:8100" />
-    <allow-navigation href="http://10.251.35.53:8101" sessionid="61175ccf" />
-    <engine name="android" spec="^7.1.4" />
+    <allow-navigation href="http://10.251.35.53:8101" sessionid="a3f4f65a" />
     <engine name="ios" spec="4.5.5" />
     <engine name="browser" spec="5.0.4" />
+    <engine name="android" spec="^7.1.4" />
 </widget>
