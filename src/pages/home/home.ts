@@ -112,14 +112,20 @@ export class HomePage implements OnInit {
 
   connect(address) {
     // Attempt to connect device with specified address, call app.deviceConnected if success
+    console.log('This is the connected address:', address);
+    this.showToast(`this is the connected address ${address}`);
+
     this.bluetoothSerial.connect(
       address,
       success => {
-        this.deviceConnected(address);
-        this.showToast('Successfully Connected');
+        this.deviceConnected(address,
+          );
+        this.showToast(`Successfully Connected  ${address}`);
+        console.log('Success address:', address);
       },
       error => {
-        this.showError('Error:Connecting to Device');
+        this.showError(`Error:Connecting to Device  ${address}`);
+        console.log('Failure address:', address);
       }
     );
   }
@@ -134,9 +140,9 @@ export class HomePage implements OnInit {
         this.handleData(success);
         this.showToast('Connected Successfullly');
       },
-      error => {
-        this.showError(error);
-      },
+      // error => {
+      //   this.showError(error);
+      // },
       address
     );
   }

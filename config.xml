@@ -3,7 +3,7 @@
     <name>bt</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://10.251.35.53:8101" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -82,8 +82,9 @@
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.11" />
     <plugin name="cordova-plugin-bluetooth-serial" spec="git+ssh://git@github.com/Shikoruma/BluetoothSerial.git" />
+    <allow-navigation href="http://192.168.1.77:8100" />
+    <allow-navigation href="http://10.251.35.53:8101" sessionid="61175ccf" />
     <engine name="android" spec="^7.1.4" />
     <engine name="ios" spec="4.5.5" />
     <engine name="browser" spec="5.0.4" />
-    <allow-navigation href="http://192.168.1.77:8100" />
 </widget>
