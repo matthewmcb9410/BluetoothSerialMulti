@@ -3,7 +3,7 @@
     <name>bt</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://10.251.35.53:8101" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -41,6 +41,13 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
+        <config-file parent="UISupportedExternalAccessoryProtocols" target="*-Info.plist">
+            <array>
+                <string>com.tru-test.scp</string>
+                <string>com.allflex-europe.rs420</string>
+                <string>com.allflex-europe.rs320</string>
+            </array>
+        </config-file>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -84,7 +91,9 @@
     <plugin name="cordova-plugin-bluetooth-serial" spec="git+ssh://git@github.com/Shikoruma/BluetoothSerial.git" />
     <allow-navigation href="http://192.168.1.77:8100" />
     <allow-navigation href="http://10.251.35.53:8101" sessionid="a3f4f65a" />
-    <engine name="ios" spec="4.5.5" />
+    <allow-navigation href="http://10.251.35.64:8100" />
+    <plugin name="cordova-plugin-bluetoothClassic-serial" spec="^0.9.8" />
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="^7.1.4" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
