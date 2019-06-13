@@ -27,7 +27,7 @@ platforms/
 www/
 $RECYCLE.BIN/
 
-!plugins/**/www
+!plugins/**/**
 
 .DS_Store
 Thumbs.db
