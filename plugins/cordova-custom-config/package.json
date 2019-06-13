@@ -1,0 +1,73 @@
+{
+  "_from": "cordova-custom-config@2.0.3",
+  "_id": "cordova-custom-config@2.0.3",
+  "_inBundle": false,
+  "_integrity": "sha1-9C3AlSu+qZELC5mz98gscLAJNo4=",
+  "_location": "/cordova-custom-config",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "cordova-custom-config@2.0.3",
+    "name": "cordova-custom-config",
+    "escapedName": "cordova-custom-config",
+    "rawSpec": "2.0.3",
+    "saveSpec": null,
+    "fetchSpec": "2.0.3"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-custom-config/-/cordova-custom-config-2.0.3.tgz",
+  "_shasum": "f42dc0952bbea9910b0b99b3f7c82c70b009368e",
+  "_spec": "cordova-custom-config@2.0.3",
+  "_where": "/Users/kogulanbaskaran/development/BluetoothSerialMulti",
+  "author": {
+    "name": "Dave Alden"
+  },
+  "bugs": {
+    "url": "https://github.com/dpa99c/cordova-custom-config/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-custom-config",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "cordova_name": "cordova-custom-config",
+  "dependencies": {
+    "colors": "1.1.2",
+    "elementtree": "0.1.6",
+    "fs-extra": "0.26.5",
+    "lodash": "4.3.0",
+    "plist": "1.2.0",
+    "shelljs": "0.7.0",
+    "tostr": "0.1.0",
+    "xcode": "0.8.3"
+  },
+  "deprecated": false,
+  "description": "Cordova/Phonegap plugin to update platform configuration files based on preferences and config-file data defined in config.xml.",
+  "homepage": "https://github.com/dpa99c/cordova-custom-config#readme",
+  "issue": "https://github.com/dpa99c/cordova-custom-config/issues",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "cordova-android",
+    "cordova-ios",
+    "phonegap",
+    "config",
+    "configuration",
+    "plist",
+    "manifest"
+  ],
+  "license": "MIT",
+  "name": "cordova-custom-config",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dpa99c/cordova-custom-config.git"
+  },
+  "version": "2.0.3"
+}

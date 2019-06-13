@@ -1,0 +1,58 @@
+{
+  "_from": "cordova-plugin-bluetoothClassic-serial",
+  "_id": "cordova-plugin-bluetoothClassic-serial@0.9.8",
+  "_inBundle": false,
+  "_integrity": "sha1-Ia0zquqn7V8uCyBmjqxIoxLVqw4=",
+  "_location": "/cordova-plugin-bluetoothClassic-serial",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-bluetoothClassic-serial",
+    "name": "cordova-plugin-bluetoothClassic-serial",
+    "escapedName": "cordova-plugin-bluetoothClassic-serial",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-bluetoothClassic-serial/-/cordova-plugin-bluetoothClassic-serial-0.9.8.tgz",
+  "_shasum": "21ad33aaeaa7ed5f2e0b20668eac48a312d5ab0e",
+  "_spec": "cordova-plugin-bluetoothClassic-serial",
+  "_where": "/Users/kogulanbaskaran/development/BluetoothSerialMulti",
+  "author": {
+    "name": "Soltius New Zealand",
+    "email": "steve.campbell@soltius.co.nz"
+  },
+  "bugs": {
+    "url": "https://github.com/soltius/BluetoothClassicSerial/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-bluetoothClassic-serial",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "Bluetooth Serial Communication Plugin",
+  "homepage": "https://github.com/soltius/BluetoothClassicSerial#readme",
+  "keywords": [
+    "cordova",
+    "bluetooth",
+    "serial",
+    "arduino",
+    "ecosystem:cordova"
+  ],
+  "license": "Apache-2.0",
+  "name": "cordova-plugin-bluetoothClassic-serial",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soltius/BluetoothClassicSerial.git"
+  },
+  "version": "0.9.8"
+}
