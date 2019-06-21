@@ -7,6 +7,9 @@
     "files": {}
   },
   "installed_plugins": {
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
     "cordova-plugin-bluetooth-serial": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
@@ -26,6 +29,9 @@
       "PACKAGE_NAME": "io.ionic.starter"
     },
     "ionic-plugin-keyboard": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "phonegap-plugin-barcodescanner": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   },

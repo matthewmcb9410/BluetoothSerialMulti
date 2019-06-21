@@ -48,6 +48,9 @@
                 <string>com.allflex-europe.rs320</string>
             </array>
         </config-file>
+        <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
+            <string>To scan barcodes</string>
+        </edit-config>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -98,5 +101,8 @@
     <allow-navigation href="http://10.251.35.57:8100" />
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="^7.1.4" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="8.0.1">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
     <engine name="ios" spec="~4.5.5" />
 </widget>

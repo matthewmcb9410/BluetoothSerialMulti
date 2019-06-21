@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { AlertController, LoadingController, Platform, ToastController } from 'ionic-angular';
 import { BluetoothDeviceConnectorService } from './bluetooth-device-connector.service';
 
@@ -10,6 +11,7 @@ export class HomePage implements OnInit {
   public message: String = '';
 
   public reader;
+  public data;
   public weigher;
 
   constructor(
@@ -18,33 +20,35 @@ export class HomePage implements OnInit {
     private platform: Platform,
     private toastCtrl: ToastController,
     private readonly bluetoothDeviceConnector: BluetoothDeviceConnectorService,
-
+    private readonly barcodeScanner: BarcodeScanner
   ) {}
 
   public async ngOnInit(): Promise<void> {
     await this.platform.ready();
 
-    this.bluetoothDeviceConnector.initialise();
+    // const status = await this.barcodeScanner.prepare();
+    console.log('status', status);
+    // this.bluetoothDeviceConnector.initialise();
 
-    await this.startScan();
+    // await this.startScan();
   }
 
   // public async scanQR() {
-  //   const scannerStatus: QRScannerStatus = await this.qrScanner.prepare();
+  //   const scannerStatus: barcodeScannerStatus = await this.barcodeScanner.prepare();
 
   //   if (scannerStatus.authorized) {
   //     // camera permission was granted
 
   //     // start scanning
-  //     let scanSub = this.qrScanner.scan().subscribe((text: string) => {
+  //     let scanSub = this.barcodeScanner.scan().subscribe((text: string) => {
   //       console.log('Scanned something', text);
 
-  //       this.qrScanner.hide(); // hide camera preview
+  //       this.barcodeScanner.hide(); // hide camera preview
   //       scanSub.unsubscribe(); // stop scanning
   //     });
   //   } else if (scannerStatus.denied) {
   //     // camera permission was permanently denied
-  //     // you must use QRScanner.openSettings() method to guide the user to the settings page
+  //     // you must use barcodeScanner.openSettings() method to guide the user to the settings page
   //     // then they can grant the permission from there
   //   } else {
   //     // permission was denied, but not permanently. You can ask for permission again at a later time.
@@ -148,5 +152,19 @@ export class HomePage implements OnInit {
       duration: 1000
     });
     toast.present();
+  }
+
+  public async scanQR() {
+    console.log('scanning 2');
+    console.log('this.barcodeScanner', this.barcodeScanner);
+    console.log('this.barcodeScanner', Object.keys(this.barcodeScanner));
+    const scanData = await this.barcodeScanner.scan();
+
+    console.log('scanData', scanData);
+    this.data = scanData.text;
+
+    // await this.barcodeScanner.show();
+    // window.document.querySelector('ion-app').classList.add('transparent-body');
+    console.log('camera opened');
   }
 }
