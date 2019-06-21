@@ -1,26 +1,28 @@
 <ion-header>
   <ion-navbar color="dark">
     <ion-title>
-      Matthew's Bluetooth App Test
+      AgriWebb Bluetooth App Test
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="back" padding>
-  <button ion-button full class="submit-button" (click)="refreshPairedDevices()">
+  <!-- <button ion-button full class="submit-button" (click)="refreshPairedDevices()">
     <ion-icon name="refresh"></ion-icon>&nbsp;Refresh Bluetooth Devices
-  </button>
+  </button> -->
   <ion-row>
     <ion-col>
       <h2>
         Available Devices
-        <button class="aw-btn" (click)="connectUnpairedDevice()">
-          Connect Device
+        <div *ngIf="readerConnected">Connected to {{ reader }} reader</div>
+        <div *ngIf="weigherConnected">Connected to {{ weigher }} weigher</div>
+        <button class="aw-btn" (click)="startScan()">
+          Search for devices
         </button>
       </h2>
     </ion-col>
   </ion-row>
-  <ion-row>
+  <!-- <ion-row>
     <ion-col>
       <ion-list radio-group [(ngModel)]="pairedDeviceId">
         <ion-item *ngFor="let i of pairedDevices; let j = index">
@@ -29,20 +31,20 @@
         </ion-item>
       </ion-list>
     </ion-col>
-  </ion-row>
+  </ion-row> -->
 
-  <button ion-button outline block color="dark" (click)="connectDevice()">
+  <!-- <button ion-button outline block color="dark" (click)="connectDevice()">
     Connect to Tag Reader
   </button>
   <button ion-button outline block color="dark" (click)="connectDevice(true)">
     Connect to Weigher
-  </button>
+  </button> -->
 
   <button ion-button outline block color="dark" (click)="requestWeight()">Request Weight</button>
   <button ion-button outline block color="dark" (click)="requestStableWeight()">
     Request Stable Weight
   </button>
-
+  <!-- <button ion-button outline block color="dark" (click)="scanQR()">Scan QR</button> -->
   <ion-item>
     <ion-label stacked>Message</ion-label>
     <ion-textarea [(ngModel)]="message"></ion-textarea>
