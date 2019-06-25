@@ -118,6 +118,58 @@ export class BluetoothDeviceConnectorService {
     });
   }
 
+  /**
+   * Function to detect whether a reader is connected or not
+   * Returns a boolean
+   */
+  public checkIfReaderConnected(): Promise<boolean> {
+    const reader = this.devices.find(d => this.Readers.has(d.name));
+    if (!reader) {
+      return Promise.resolve(false);
+    }
+    const platformSpecificConfig = this.buildPlatformSpecificConfig(reader);
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.isConnected(
+        platformSpecificConfig.deviceId,
+        platformSpecificConfig.interfaceIdArray,
+        () => {
+          resolve(true);
+        },
+        error => {
+          console.log('error', error);
+          resolve(false);
+        }
+      );
+    });
+  }
+
+
+   /**
+   * Function to detect whether a reader is connected or not
+   * Returns a boolean
+   */
+  public checkIfWeigherConnected(): Promise<boolean> {
+    const weigher = this.devices.find(d => this.Weighers.has(d.name));
+    if (!weigher) {
+      return Promise.resolve(false);
+    }
+    const platformSpecificConfig = this.buildPlatformSpecificConfig(weigher);
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.isConnected(
+        platformSpecificConfig.deviceId,
+        platformSpecificConfig.interfaceIdArray,
+        () => {
+          resolve(true);
+        },
+        error => {
+          console.log('error', error);
+          resolve(false);
+        }
+      );
+    });
+  }
+
+
   // /**
   //  * Check if app has bluetooth permission
   //  * If not, then request user for permission

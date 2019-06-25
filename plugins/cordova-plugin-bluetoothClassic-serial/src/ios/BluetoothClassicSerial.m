@@ -188,18 +188,109 @@
 - (void)isConnected:(CDVInvokedUrlCommand*)command {
 
     CDVPluginResult *pluginResult = nil;
+    bool inError = false;
+    NSMutableDictionary *connectionResult = [[NSMutableDictionary alloc] init];
+    NSMutableArray *connectionError = [[NSMutableArray alloc] init];
+    NSUInteger connectionId;
+    NSArray *protocolStrings = [command.arguments objectAtIndex:1];
 
-    // If we've got an accessory check if we're connected with all protocols
-    if ([self isAllCommunicationSessionsOpen]) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
+    // Make sure we don't have a null for connection id
+    if ([command.arguments objectAtIndex:0] != (id)[NSNull null]) {
+      @try {
+        connectionId = (NSUInteger)[[command.arguments objectAtIndex:0] integerValue];
+        connectionResult = [self openSessionForConnectionIdAndProtocolStrings:connectionId:protocolStrings];
+
+        NSNumber *status = connectionResult[@"status"];
+        if (![status boolValue]) {
+            inError = true;
+        } else {
+            // we are already connected to device 'x'
+        }
+      }
+      @catch (NSException *e) {
+        // Any errors here then throw the reason
+        inError = true;
+        [connectionResult setValue:e.reason forKey:@"error"];
+      }
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
+        inError = true;
+        connectionId = 0;
+        [connectionResult setValue:@"The connection ID was null" forKey:@"error"];
     }
 
+    if (inError) {
+        // If we're in error just make sure to close any communications sessions that might have opened
+        [self  closeCommunicationSessions];
+
+        if (connectionId > 0) {
+            [connectionResult setValue:[NSNumber numberWithLong:connectionId] forKeyPath:@"id"];
+        }
+        [connectionResult setObject:protocolStrings forKey:@"protocolStrings"];
+        [connectionError insertObject:connectionResult atIndex:0];
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:false];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
+    }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
 
+if (inError) {
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
+    } else {
+        [self closeCommunicationSessionOnConnectionId:connectionId:protocolStrings]
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
+
+    }
+
+- (void)disconnectDevice:(CDVInvokedUrlCommand *)command {
+
+    // Close the session with the device
+    [self closeCommunicationSessions];
+
+    CDVPluginResult *pluginResult = nil;
+    bool inError = false;
+    NSMutableDictionary *connectionResult = [[NSMutableDictionary alloc] init];
+    NSMutableArray *connectionError = [[NSMutableArray alloc] init];
+    NSUInteger connectionId;
+    NSArray *protocolStrings = [command.arguments objectAtIndex:1];
+
+    // Make sure we don't have a null for connection id
+    if ([command.arguments objectAtIndex:0] != (id)[NSNull null]) {
+      @try {
+        connectionId = (NSUInteger)[[command.arguments objectAtIndex:0] integerValue];
+        connectionResult = [self openSessionForConnectionIdAndProtocolStrings:connectionId:protocolStrings];
+
+        NSNumber *status = connectionResult[@"status"];
+        if (![status boolValue]) {
+            inError = true;
+        } else {
+            // we are already connected to device 'x'
+            // disconnect device
+        }
+      }
+      @catch (NSException *e) {
+        // Any errors here then throw the reason
+        inError = true;
+        [connectionResult setValue:e.reason forKey:@"error"];
+      }
+    } else {
+        inError = true;
+        connectionId = 0;
+        [connectionResult setValue:@"The connection ID was null" forKey:@"error"];
+    }
+
+    if (inError) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
+    } else {
+        [self  closeCommunicationSessions:connectionId: connectionId];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+}
 
 - (void)disconnect:(CDVInvokedUrlCommand *)command {
 
@@ -207,13 +298,52 @@
     [self closeCommunicationSessions];
 
     CDVPluginResult *pluginResult = nil;
+    bool inError = false;
+    NSMutableDictionary *connectionResult = [[NSMutableDictionary alloc] init];
+    NSMutableArray *connectionError = [[NSMutableArray alloc] init];
+    NSUInteger connectionId;
+    NSArray *protocolStrings = [command.arguments objectAtIndex:1];
 
-    if (![self isAllCommunicationSessionsOpen]) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
+    // Make sure we don't have a null for connection id
+    if ([command.arguments objectAtIndex:0] != (id)[NSNull null]) {
+      @try {
+        connectionId = (NSUInteger)[[command.arguments objectAtIndex:0] integerValue];
+        connectionResult = [self openSessionForConnectionIdAndProtocolStrings:connectionId:protocolStrings];
+
+        NSNumber *status = connectionResult[@"status"];
+        if (![status boolValue]) {
+            inError = true;
+        } else {
+            // we are already connected to device 'x'
+            // disconnect device
+        }
+      }
+      @catch (NSException *e) {
+        // Any errors here then throw the reason
+        inError = true;
+        [connectionResult setValue:e.reason forKey:@"error"];
+      }
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
+        inError = true;
+        connectionId = 0;
+        [connectionResult setValue:@"The connection ID was null" forKey:@"error"];
     }
 
+    if (inError) {
+        // If we're in error just make sure to close any communications sessions that might have opened
+        [self  closeCommunicationSessions];
+
+        if (connectionId > 0) {
+            [connectionResult setValue:[NSNumber numberWithLong:connectionId] forKeyPath:@"id"];
+        }
+        [connectionResult setObject:protocolStrings forKey:@"protocolStrings"];
+        [connectionError insertObject:connectionResult atIndex:0];
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:true];
+    } else {
+        [self  closeCommunicationSessions];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:true];
+    }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
@@ -441,6 +571,17 @@
 - (void)closeCommunicationSessions {
 
     for (CommunicationSession *session in self.communicationSessions) {
+        [session close];
+    }
+
+    self.communicationSessions = [[NSMutableArray alloc] init];
+
+}
+
+- (void)closeCommunicationSessionOnConnectionId:(NSUInteger)connectionId :(NSArray *)protocolStrings {
+
+    for (CommunicationSession *session in self.communicationSessions) {
+      if(session connectionID == connectionId){
         [session close];
     }
 

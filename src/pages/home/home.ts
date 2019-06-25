@@ -17,8 +17,7 @@ export class HomePage implements OnInit {
     private alertCtrl: AlertController,
     private platform: Platform,
     private toastCtrl: ToastController,
-    private readonly bluetoothDeviceConnector: BluetoothDeviceConnectorService,
-
+    private readonly bluetoothDeviceConnector: BluetoothDeviceConnectorService
   ) {}
 
   public async ngOnInit(): Promise<void> {
@@ -67,6 +66,12 @@ export class HomePage implements OnInit {
       // }
 
       await this.bluetoothDeviceConnector.refreshPairedDevices();
+
+      const connectionResultReader = await this.bluetoothDeviceConnector.checkIfReaderConnected();
+      console.log('isconnected Reader', connectionResultReader);
+
+      const connectionResultWeigher = await this.bluetoothDeviceConnector.checkIfWeigherConnected();
+      console.log('isconnected Weigher', connectionResultWeigher);
 
       try {
         this.reader = await this.bluetoothDeviceConnector.connectReader();

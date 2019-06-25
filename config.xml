@@ -3,7 +3,7 @@
     <name>bt</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://10.251.35.51:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -83,20 +83,21 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
-    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="cordova-plugin-whitelist" spec="1.3.1" />
-    <plugin name="cordova-plugin-device" spec="1.1.4" />
-    <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
-    <plugin name="cordova-plugin-ionic-webview" spec="^1.1.11" />
-    <plugin name="cordova-plugin-bluetooth-serial" spec="git+ssh://git@github.com/Shikoruma/BluetoothSerial.git" />
     <allow-navigation href="http://192.168.1.77:8100" />
     <allow-navigation href="http://10.251.35.53:8101" sessionid="a3f4f65a" />
     <allow-navigation href="http://10.251.35.64:8100" />
-    <plugin name="cordova-plugin-bluetoothClassic-serial" spec="^0.9.8" />
-    <plugin name="cordova-plugin-android-permissions" spec="1.0.0" />
     <allow-navigation href="http://10.251.35.64:8101" />
     <allow-navigation href="http://10.251.35.57:8100" />
+    <allow-navigation href="http://10.251.35.51:8100" />
+    <plugin name="cordova-plugin-bluetooth-serial" spec="~0.4.5" />
+    <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
+    <plugin name="cordova-plugin-device" spec="^1.1.4" />
+    <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
+    <plugin name="cordova-plugin-ionic-webview" spec="^1.2.1" />
+    <plugin name="cordova-plugin-bluetoothClassic-serial" spec="~0.9.8" />
+    <plugin name="cordova-plugin-android-permissions" spec="~1.0.0" />
     <engine name="browser" spec="5.0.4" />
+    <engine name="ios" spec="^4.5.5" />
     <engine name="android" spec="^7.1.4" />
-    <engine name="ios" spec="~4.5.5" />
 </widget>

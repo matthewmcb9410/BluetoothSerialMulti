@@ -28,7 +28,7 @@
     "cordova-android": "^7.1.4",
     "cordova-browser": "5.0.4",
     "cordova-custom-config": "^2.0.3",
-    "cordova-ios": "4.5.5",
+    "cordova-ios": "^4.5.5",
     "cordova-plugin-android-permissions": "1.0.0",
     "cordova-plugin-bluetooth-serial": "git+ssh://git@github.com/Shikoruma/BluetoothSerial.git",
     "cordova-plugin-bluetoothClassic-serial": "^0.9.8",
@@ -58,10 +58,11 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-bluetooth-serial": {},
       "cordova-plugin-bluetoothClassic-serial": {},
-      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-android-permissions": {}
     },
     "platforms": [
       "browser",
+      "ios",
       "android"
     ]
   }

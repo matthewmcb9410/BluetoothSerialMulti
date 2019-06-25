@@ -7,6 +7,9 @@
     "files": {}
   },
   "installed_plugins": {
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
     "cordova-plugin-bluetooth-serial": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
