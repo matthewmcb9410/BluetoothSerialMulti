@@ -237,7 +237,7 @@
 - (void)disconnectDevice:(CDVInvokedUrlCommand *)command {
 
     // Close the session with the device
-    [self closeCommunicationSessions];
+    // [self closeCommunicationSessions];
 
     CDVPluginResult *pluginResult = nil;
     bool inError = false;
@@ -274,7 +274,7 @@
     if (inError) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
     } else {
-        [self  closeCommunicationSessions:connectionId: connectionId];
+        [self  closeCommunicationSessionOnConnectionId:connectionId:protocolStrings];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -284,7 +284,7 @@
 - (void)disconnect:(CDVInvokedUrlCommand *)command {
 
     // Close the session with the device
-    [self closeCommunicationSessions];
+    // [self closeCommunicationSessions];
 
     CDVPluginResult *pluginResult = nil;
     bool inError = false;
