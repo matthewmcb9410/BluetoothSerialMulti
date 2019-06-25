@@ -166,7 +166,6 @@
 
 }
 
-
 - (void)isEnabled: (CDVInvokedUrlCommand *)command {
 
     // Check if the Bluetooth state has been updated
@@ -183,7 +182,6 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
-
 
 - (void)isConnected:(CDVInvokedUrlCommand*)command {
 
@@ -235,15 +233,6 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
-
-if (inError) {
-
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:false];
-    } else {
-        [self closeCommunicationSessionOnConnectionId:connectionId:protocolStrings]
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
-
-    }
 
 - (void)disconnectDevice:(CDVInvokedUrlCommand *)command {
 
@@ -364,7 +353,6 @@ if (inError) {
     return true;
 }
 
-
 - (void)connect:(CDVInvokedUrlCommand *)command {
 
     CDVPluginResult *pluginResult = nil;
@@ -421,7 +409,6 @@ if (inError) {
 
 }
 
-
 - (void)discoverUnpaired:(CDVInvokedUrlCommand *)command {
 
     [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error){
@@ -476,7 +463,6 @@ if (inError) {
 
 }
 
-
 - (void)list:(CDVInvokedUrlCommand *)command {
 
     NSMutableArray *accessoriesList = [[NSMutableArray alloc] initWithArray:[[EAAccessoryManager sharedAccessoryManager] connectedAccessories]];
@@ -496,7 +482,6 @@ if (inError) {
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
-
 
 - (void)write:(CDVInvokedUrlCommand *)command {
 
@@ -526,7 +511,6 @@ if (inError) {
 
 }
 
-
 - (void)read:(CDVInvokedUrlCommand *)command {
 
     CDVPluginResult *pluginResult = nil;
@@ -548,7 +532,6 @@ if (inError) {
 
 }
 
-
 - (void)readUntil:(CDVInvokedUrlCommand*)command {
 
     CDVPluginResult *pluginResult = nil;
@@ -565,6 +548,8 @@ if (inError) {
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
 }
+
+
 
 #pragma mark - Internal implementation methods
 
@@ -650,7 +635,6 @@ if (inError) {
 
 }
 
-
 - (NSMutableDictionary*)accessoryDetails:(EAAccessory *)accessory {
 
     NSMutableDictionary *accessoryDict = [[NSMutableDictionary alloc] init];
@@ -664,7 +648,6 @@ if (inError) {
     return accessoryDict;
 
 }
-
 
 - (CommunicationSession*)getCommunicationSessionForProtocolString: (NSString *)protocolString {
 
@@ -681,7 +664,6 @@ if (inError) {
     return protocolSession;
 
 }
-
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
 
