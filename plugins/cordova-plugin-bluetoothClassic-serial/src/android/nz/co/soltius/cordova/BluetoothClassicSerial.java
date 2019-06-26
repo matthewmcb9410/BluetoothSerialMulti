@@ -129,12 +129,12 @@ public class BluetoothClassicSerial extends CordovaPlugin {
         } else {
             if (action.equals(WRITE)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
                 byte[] data = args.getArrayBuffer(1);
 
                 InterfaceContext ic;
 
-                ic = getInterfaceContext(interfaceId);
+                ic = getInterfaceContext(macAddress);
 
                 if (ic != null) {
                     ic.bluetoothClassicSerialService.write(data);
@@ -145,8 +145,8 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(AVAILABLE)) {
 
-                String interfaceId = args.getString(0);
-                InterfaceContext ic = getInterfaceContext(interfaceId);
+                String macAddress = args.getString(0);
+                InterfaceContext ic = getInterfaceContext(macAddress);
                 int available = 0;
 
                 if (ic != null) {
@@ -157,9 +157,9 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(READ)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
                 String delim = args.getString(1);
-                InterfaceContext ic = getInterfaceContext(interfaceId);
+                InterfaceContext ic = getInterfaceContext(macAddress);
                 String data = "";
 
                 if (ic != null) {
@@ -169,12 +169,12 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(READ_UNTIL)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
                 String delim = args.getString(1);
                 String readText = "";
                 InterfaceContext ic;
 
-                ic = getInterfaceContext(interfaceId);
+                ic = getInterfaceContext(macAddress);
 
                 if (ic != null) {
                     readText = ic.readUntil(delim);
@@ -184,10 +184,10 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(SUBSCRIBE)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
                 String delim = args.getString(1);
 
-                setContextSubscribe(interfaceId, callbackContext, delim);
+                setContextSubscribe(macAddress, callbackContext, delim);
 
                 //dataAvailableCallback = callbackContext;
 
@@ -197,9 +197,9 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(UNSUBSCRIBE)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
 
-                setContextSubscribe(interfaceId, null, null);
+                setContextSubscribe(macAddress, null, null);
 
                 // send no result, so Cordova won't hold onto the data available callback anymore
 //                PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
@@ -208,10 +208,10 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(SUBSCRIBE_RAW)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
 
                 // rawDataAvailableCallback = callbackContext;
-                setContextRawSubscribe(interfaceId, callbackContext);
+                setContextRawSubscribe(macAddress, callbackContext);
 
                 PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
                 result.setKeepCallback(true);
@@ -219,8 +219,8 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(UNSUBSCRIBE_RAW)) {
 
-                String interfaceId = args.getString(0);
-                setContextRawSubscribe(interfaceId, null);
+                String macAddress = args.getString(0);
+                setContextRawSubscribe(macAddress, null);
 
                 // rawDataAvailableCallback = null;
 
@@ -240,10 +240,10 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             } else if (action.equals(CLEAR)) {
 
-                String interfaceId = args.getString(0);
+                String macAddress = args.getString(0);
                 InterfaceContext ic;
 
-                ic = getInterfaceContext(interfaceId);
+                ic = getInterfaceContext(macAddress);
                 if (ic != null) {
                     ic.clearBuffer();
                 }
@@ -321,8 +321,7 @@ public class BluetoothClassicSerial extends CordovaPlugin {
         public BluetoothClassicSerialService bluetoothClassicSerialService;
         public StringBuffer buffer;
         public String delimiter;
-        public String deviceId;
-        public String interfaceId;
+        public String macAddress;
         public CallbackContext dataAvailableCallback;
         public CallbackContext rawDataAvailableCallback;
 
@@ -331,9 +330,9 @@ public class BluetoothClassicSerial extends CordovaPlugin {
         // Consider replacing with normal callbacks
         private final Handler mHandler;
 
-        public InterfaceContext(String interfaceId) {
+        public InterfaceContext(String macAddress) {
 
-            this.interfaceId = interfaceId;
+            this.macAddress = macAddress;
 
             mHandler = new Handler() {
 
@@ -414,7 +413,7 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
             this.bluetoothClassicSerialService = new BluetoothClassicSerialService(this.mHandler);
             this.buffer = new StringBuffer();
-            this.interfaceId = interfaceId;
+            this.macAddress = macAddress;
             this.dataAvailableCallback = null;
             this.delimiter = null;
         }
@@ -553,24 +552,24 @@ public class BluetoothClassicSerial extends CordovaPlugin {
         }
 
         if (!mDeviceId.equalsIgnoreCase(macAddress)) {
-            destroy();
+            destroy(macAddress);
             mDeviceId = macAddress;
         }
 
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
 
         if (device != null) {
-                connectCallback = callbackContext;
+            connectCallback = callbackContext;
 
             for (int i = 0; i < uuidJSONArray.length(); i++) {
                 stringConnectUuid = uuidJSONArray.getString(i);
                 connectUuid = UUID.fromString(stringConnectUuid);
 
-                interfaceContext = connections.get(stringConnectUuid);
+                interfaceContext = connections.get(macAddress);
 
                 if (interfaceContext == null){
-                    interfaceContext = new InterfaceContext(stringConnectUuid);
-                    connections.put(stringConnectUuid, interfaceContext);
+                    interfaceContext = new InterfaceContext(macAddress);
+                    connections.put(macAddress, interfaceContext);
                 }
 
                 if (interfaceContext != null) {
@@ -608,44 +607,52 @@ public class BluetoothClassicSerial extends CordovaPlugin {
 
     private void destroy() {
 
+        destroy(null);
+    }
+
+
+    private void destroy(String macAddress) {
+
         InterfaceContext ic;
 
         for(Map.Entry<String,InterfaceContext> entry: connections.entrySet()) {
 
             ic = entry.getValue();
 
-            if (ic.bluetoothClassicSerialService != null) {
-                ic.bluetoothClassicSerialService.stop();
-            }
+            if (macAddress == null || entry.getKey() == macAddress) {
+              if (ic.bluetoothClassicSerialService != null) {
+                  ic.bluetoothClassicSerialService.stop();
+              }
 
-            connections.remove(entry.getKey());
+              connections.remove(entry.getKey());
+            }
         }
     }
 
     private void notifyConnectionLost(String error) {
         if (connectCallback != null) {
-        connectCallback.error(error);
-        connectCallback = null;
+            connectCallback.error(error);
+            connectCallback = null;
         }
     }
 
     private void notifyConnectionSuccess() {
-            if (connectCallback != null) {
+        if (connectCallback != null) {
             PluginResult result = new PluginResult(PluginResult.Status.OK);
             result.setKeepCallback(true);
             connectCallback.sendPluginResult(result);
         }
     }
 
-    private void setContextSubscribe(String interfaceId, CallbackContext cc, String delimiter) {
+    private void setContextSubscribe(String macAddress, CallbackContext cc, String delimiter) {
 
         InterfaceContext ic = null;
 
-        ic = getInterfaceContext(interfaceId);
+        ic = getInterfaceContext(macAddress);
 
         if (ic == null) {
-            ic = new InterfaceContext(interfaceId);
-            setInterfaceContext(interfaceId, ic);
+            ic = new InterfaceContext(macAddress);
+            setInterfaceContext(macAddress, ic);
         }
 
         if (ic != null) {
@@ -653,80 +660,70 @@ public class BluetoothClassicSerial extends CordovaPlugin {
             ic.dataAvailableCallback = cc;
             ic.delimiter = delimiter;
 
-            setInterfaceContext(interfaceId, ic);
+            setInterfaceContext(macAddress, ic);
         }
 
     }
 
-    private void setContextRawSubscribe(String interfaceId, CallbackContext cc) {
+    private void setContextRawSubscribe(String macAddress, CallbackContext cc) {
 
         InterfaceContext ic = null;
 
-        ic = getInterfaceContext(interfaceId);
+        ic = getInterfaceContext(macAddress);
 
         if (ic == null) {
-            ic = new InterfaceContext(interfaceId);
-            setInterfaceContext(interfaceId, ic);
+            ic = new InterfaceContext(macAddress);
+            setInterfaceContext(macAddress, ic);
         }
 
         if (ic != null) {
             ic.rawDataAvailableCallback = cc;
-            setInterfaceContext(interfaceId, ic);
+            setInterfaceContext(macAddress, ic);
         }
 
     }
 
-    private InterfaceContext getInterfaceContext(String interfaceId) {
-        return connections.get(interfaceId);
+    private InterfaceContext getInterfaceContext(String macAddress) {
+        return connections.get(macAddress);
     }
 
 
-    private void setInterfaceContext(String interfaceId, InterfaceContext ic) {
+    private void setInterfaceContext(String macAddress, InterfaceContext ic) {
 
-        if (interfaceId == null) {
+        if (macAddress == null) {
             return;
         }
 
         if (ic == null) {
-            ic = new InterfaceContext(interfaceId);
+            ic = new InterfaceContext(macAddress);
         }
 
-        connections.put(interfaceId, ic);
+        connections.put(macAddress, ic);
 
     }
 
-    private void clearInterfaceBuffer(String deviceId, String interfaceId) {
-        InterfaceContext ic = null;
-
-        ic = getInterfaceContext(interfaceId);
-
-        if (ic != null) {
-            ic.clearBuffer();
-        }
-
-    }
 
     private void isConnected(CallbackContext callbackContext) {
 
-      InterfaceContext ic;
-      boolean successful;
+        InterfaceContext ic;
+        boolean successful;
 
-      successful = true;
+        successful = true;
 
-      for(Map.Entry<String,InterfaceContext> entry: connections.entrySet()) {
+        for(Map.Entry<String,InterfaceContext> entry: connections.entrySet()) {
 
-          ic = entry.getValue();
+            ic = entry.getValue();
 
-          if (ic.bluetoothClassicSerialService.getState() != BluetoothClassicSerialService.STATE_CONNECTED) {
-              successful = false;
-          }
+            if (ic.bluetoothClassicSerialService.getState() != BluetoothClassicSerialService.STATE_CONNECTED) {
+                successful = false;
+            }
 
         }
 
         if (successful == true) {
-          callbackContext.success();
+            callbackContext.success();
         } else {
-          callbackContext.error("Not connected.");
+            callbackContext.error("Not connected.");
         }
     }
 }

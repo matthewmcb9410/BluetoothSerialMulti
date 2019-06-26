@@ -11,7 +11,7 @@ export class BluetoothDeviceConnectorService {
   public weigherConfig: BluetoothPluginConnectionConfig;
   private bluetoothSerial;
   private devices: DeviceConfig[];
-  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'xrs2']);
+  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'xrs2', 'RS420_07820']);
   private readonly Weighers: Set<string> = new Set(['EziWeigh', 'XR5000']);
 
   constructor(
@@ -143,8 +143,7 @@ export class BluetoothDeviceConnectorService {
     });
   }
 
-
-   /**
+  /**
    * Function to detect whether a reader is connected or not
    * Returns a boolean
    */
@@ -168,7 +167,6 @@ export class BluetoothDeviceConnectorService {
       );
     });
   }
-
 
   // /**
   //  * Check if app has bluetooth permission
@@ -314,9 +312,21 @@ export class BluetoothDeviceConnectorService {
     const platformSpecificConfig = this.buildPlatformSpecificConfig(config);
     const subject = new BehaviorSubject(null);
 
+    let osSpecificInterfaceId;
+
+    if (this.platform.is('android')) {
+      // osSpecificInterfaceId = this.ANDROID_INTERFACE_ID;
+      osSpecificInterfaceId = platformSpecificConfig.deviceId;
+    } else if (this.platform.is('ios')) {
+      osSpecificInterfaceId = platformSpecificConfig.interfaceIdArray[0];
+    } else {
+      alert('not supported');
+      return;
+    }
+
     // Subscribe to data receiving as soon as the delimiter is read
     this.bluetoothSerial.subscribe(
-      platformSpecificConfig.interfaceIdArray[0],
+      osSpecificInterfaceId,
       '\r',
       data => {
         console.log('data', data);
@@ -333,7 +343,7 @@ export class BluetoothDeviceConnectorService {
   private writeToWeigher(data): Promise<void> {
     let osSpecificInterfaceId;
     if (this.platform.is('android')) {
-      osSpecificInterfaceId = this.ANDROID_INTERFACE_ID;
+      osSpecificInterfaceId = this.weigherConfig.deviceId;
     } else if (this.platform.is('ios')) {
       osSpecificInterfaceId = this.weigherConfig.interfaceIdArray[0];
     } else {

@@ -50,6 +50,17 @@ export class HomePage implements OnInit {
   //   }
   // }
 
+  public async connectoReader() {
+    this.reader = await this.bluetoothDeviceConnector.connectReader();
+
+    if (this.reader) {
+      this.bluetoothDeviceConnector.subscribeToReader().subscribe(value => {
+        console.log('reader value', value);
+        this.showToast(`reader value ${value}`);
+      });
+    }
+  }
+
   public async startScan() {
     try {
       const enabled = await this.bluetoothDeviceConnector.checkBluetoothEnabled();
@@ -65,6 +76,7 @@ export class HomePage implements OnInit {
       //   this.showError('Needs bluetooth permission to connect with readers');
       // }
 
+      await this.bluetoothDeviceConnector.disconnect();
       await this.bluetoothDeviceConnector.refreshPairedDevices();
 
       const connectionResultReader = await this.bluetoothDeviceConnector.checkIfReaderConnected();
