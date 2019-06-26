@@ -28,7 +28,7 @@ export class HomePage implements OnInit {
 
     // const status = await this.barcodeScanner.prepare();
     console.log('status', status);
-    // this.bluetoothDeviceConnector.initialise();
+    this.bluetoothDeviceConnector.initialise();
 
     // await this.startScan();
   }
@@ -55,6 +55,17 @@ export class HomePage implements OnInit {
   //   }
   // }
 
+  public async connectoReader() {
+    this.reader = await this.bluetoothDeviceConnector.connectReader();
+
+    if (this.reader) {
+      this.bluetoothDeviceConnector.subscribeToReader().subscribe(value => {
+        console.log('reader value', value);
+        this.showToast(`reader value ${value}`);
+      });
+    }
+  }
+
   public async startScan() {
     try {
       const enabled = await this.bluetoothDeviceConnector.checkBluetoothEnabled();
@@ -70,7 +81,14 @@ export class HomePage implements OnInit {
       //   this.showError('Needs bluetooth permission to connect with readers');
       // }
 
+      await this.bluetoothDeviceConnector.disconnect();
       await this.bluetoothDeviceConnector.refreshPairedDevices();
+
+      const connectionResultReader = await this.bluetoothDeviceConnector.checkIfReaderConnected();
+      console.log('isconnected Reader', connectionResultReader);
+
+      const connectionResultWeigher = await this.bluetoothDeviceConnector.checkIfWeigherConnected();
+      console.log('isconnected Weigher', connectionResultWeigher);
 
       try {
         this.reader = await this.bluetoothDeviceConnector.connectReader();
@@ -93,6 +111,12 @@ export class HomePage implements OnInit {
         await this.bluetoothDeviceConnector.discoverUnpairedDevices();
       }
 
+      console.log('discover ended');
+
+      if (!this.reader || !this.weigher) {
+        await this.bluetoothDeviceConnector.discoverUnpairedDevices();
+      }
+
       if (!this.reader) {
         this.reader = await this.bluetoothDeviceConnector.connectReader();
       }
@@ -106,20 +130,26 @@ export class HomePage implements OnInit {
       console.log('weigher 2', this.weigher);
 
       if (this.reader) {
-        this.bluetoothDeviceConnector.subscribeToReader().subscribe(value => {
-          console.log('reader value', value);
-          this.showToast(`reader value ${value}`);
-        });
+        this.bluetoothDeviceConnector
+          .subscribeToReader()
+          .filter(v => v)
+          .subscribe(value => {
+            console.log('reader value', value);
+            this.showToast(`reader value ${value}`);
+          });
       }
 
       if (this.weigher) {
-        this.bluetoothDeviceConnector.subscribeToWeigher().subscribe(value => {
-          console.log('weigher value', value);
-          this.showToast(`weigher value ${value}`);
-        });
+        this.bluetoothDeviceConnector
+          .subscribeToWeigher()
+          .filter(v => v)
+          .subscribe(value => {
+            console.log('weigher value', value);
+            this.showToast(`weigher value ${value}`);
+          });
       }
 
-      console.log('weigher 2 ', this.weigher);
+      // console.log('weigher 2 ', this.weigher);
     } catch (err) {
       this.showError(err.message);
     }
@@ -152,6 +182,13 @@ export class HomePage implements OnInit {
       duration: 1000
     });
     toast.present();
+  }
+
+  public connectReader() {
+    this.bluetoothDeviceConnector.subscribeToWeigher().subscribe(value => {
+      console.log('weigher value', value);
+      this.showToast(`weigher value ${value}`);
+    });
   }
 
   public async scanQR() {

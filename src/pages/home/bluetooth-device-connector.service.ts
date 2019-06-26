@@ -11,7 +11,7 @@ export class BluetoothDeviceConnectorService {
   public weigherConfig: BluetoothPluginConnectionConfig;
   private bluetoothSerial;
   private devices: DeviceConfig[];
-  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'xrs2']);
+  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'xrs2', 'RS420_07820']);
   private readonly Weighers: Set<string> = new Set(['EziWeigh', 'XR5000']);
 
   constructor(
@@ -108,11 +108,62 @@ export class BluetoothDeviceConnectorService {
         platformSpecificConfig.deviceId,
         platformSpecificConfig.interfaceIdArray,
         () => {
+          console.log('connected');
           resolve(config.name);
         },
         error => {
           console.log('error', error);
           resolve(null);
+        }
+      );
+    });
+  }
+
+  /**
+   * Function to detect whether a reader is connected or not
+   * Returns a boolean
+   */
+  public checkIfReaderConnected(): Promise<boolean> {
+    const reader = this.devices.find(d => this.Readers.has(d.name));
+    if (!reader) {
+      return Promise.resolve(false);
+    }
+    const platformSpecificConfig = this.buildPlatformSpecificConfig(reader);
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.isConnected(
+        platformSpecificConfig.deviceId,
+        platformSpecificConfig.interfaceIdArray,
+        () => {
+          resolve(true);
+        },
+        error => {
+          console.log('error', error);
+          resolve(false);
+        }
+      );
+    });
+  }
+
+  /**
+   * Function to detect whether a reader is connected or not
+   * Returns a boolean
+   */
+  public checkIfWeigherConnected(): Promise<boolean> {
+    const weigher = this.devices.find(d => this.Weighers.has(d.name));
+    if (!weigher) {
+      return Promise.resolve(false);
+    }
+    const platformSpecificConfig = this.buildPlatformSpecificConfig(weigher);
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.isConnected(
+        platformSpecificConfig.deviceId,
+        platformSpecificConfig.interfaceIdArray,
+        () => {
+          resolve(true);
+        },
+        error => {
+          console.log('error', error);
+          resolve(false);
         }
       );
     });
@@ -175,6 +226,8 @@ export class BluetoothDeviceConnectorService {
         }
       );
     });
+
+    console.log('number of devices discovered', this.devices.length);
   }
 
   /**
@@ -201,6 +254,8 @@ export class BluetoothDeviceConnectorService {
     } else {
       throw new Error('Only supported on android and iOS');
     }
+
+    console.log('unpairedDevices', unpairedDevices);
 
     this.devices = uniqBy(this.devices.concat(unpairedDevices), 'id');
   }
@@ -234,6 +289,7 @@ export class BluetoothDeviceConnectorService {
 
     return new Promise(resolve => {
       this.bluetoothSerial.setDeviceDiscoveredListener((device: DeviceConfig) => {
+        console.log('received');
         resolve([device]);
       });
     });
@@ -262,9 +318,21 @@ export class BluetoothDeviceConnectorService {
     const platformSpecificConfig = this.buildPlatformSpecificConfig(config);
     const subject = new BehaviorSubject(null);
 
+    let osSpecificInterfaceId;
+
+    if (this.platform.is('android')) {
+      // osSpecificInterfaceId = this.ANDROID_INTERFACE_ID;
+      osSpecificInterfaceId = platformSpecificConfig.deviceId;
+    } else if (this.platform.is('ios')) {
+      osSpecificInterfaceId = platformSpecificConfig.interfaceIdArray[0];
+    } else {
+      alert('not supported');
+      return;
+    }
+
     // Subscribe to data receiving as soon as the delimiter is read
     this.bluetoothSerial.subscribe(
-      platformSpecificConfig.interfaceIdArray[0],
+      osSpecificInterfaceId,
       '\r',
       data => {
         console.log('data', data);
@@ -281,7 +349,7 @@ export class BluetoothDeviceConnectorService {
   private writeToWeigher(data): Promise<void> {
     let osSpecificInterfaceId;
     if (this.platform.is('android')) {
-      osSpecificInterfaceId = this.ANDROID_INTERFACE_ID;
+      osSpecificInterfaceId = this.weigherConfig.deviceId;
     } else if (this.platform.is('ios')) {
       osSpecificInterfaceId = this.weigherConfig.interfaceIdArray[0];
     } else {
