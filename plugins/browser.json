@@ -27,10 +27,29 @@
     },
     "cordova-plugin-bluetoothClassic-serial": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "phonegap-plugin-barcodescanner": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "cordova-plugin-bluetoothle": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-bluetooth-peripheral-usage-description": {
+      "TEXT": "Allow to use bluetooth",
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-ble-central": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {
     "cordova-custom-config": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-compat": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   }

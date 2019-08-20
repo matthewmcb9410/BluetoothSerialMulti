@@ -34,6 +34,16 @@
     "phonegap-plugin-barcodescanner": {
       "ANDROID_SUPPORT_V4_VERSION": "27.+",
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-bluetoothle": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-bluetooth-peripheral-usage-description": {
+      "TEXT": "Allow to use bluetooth",
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-ble-central": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {

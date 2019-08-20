@@ -78,5 +78,39 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-bluetoothle": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-bluetoothle@4.5.5"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-bluetooth-peripheral-usage-description": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-bluetooth-peripheral-usage-description@^1.0.0"
+    },
+    "is_top_level": true,
+    "variables": {
+      "TEXT": "Allow to use bluetooth"
+    }
+  },
+  "cordova-plugin-ble-central": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-ble-central"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-compat": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-compat@^1.2.0"
+    },
+    "is_top_level": false,
+    "variables": {}
   }
 }

@@ -11,7 +11,7 @@ export class BluetoothDeviceConnectorService {
   public weigherConfig: BluetoothPluginConnectionConfig;
   private bluetoothSerial;
   private devices: DeviceConfig[];
-  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'xrs2', 'RS420_07820']);
+  private readonly Readers: Set<string> = new Set(['rs320', 'RS420', 'XRS2', 'RS420_07820']);
   private readonly Weighers: Set<string> = new Set(['EziWeigh', 'XR5000']);
 
   constructor(
@@ -52,7 +52,7 @@ export class BluetoothDeviceConnectorService {
   public connectReader(): Promise<string> {
     const reader = this.devices.find(d => this.Readers.has(d.name));
 
-    console.log('connectReader', reader);
+    console.log('connectReader', reader, this.devices);
 
     if (reader) {
       return this.connect(reader);
