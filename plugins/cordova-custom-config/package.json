@@ -42,7 +42,7 @@
     "colors": "1.1.2",
     "elementtree": "0.1.6",
     "fs-extra": "0.26.5",
-    "lodash": "4.3.0",
+    "lodash": "4.17.15",
     "plist": "1.2.0",
     "shelljs": "0.7.0",
     "tostr": "0.1.0",
